@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <style type="text/css">
+@import url('https://fonts.googleapis.com/css2?family=Geo&family=Oxanium:wght@200&display=swap');
+
+*:before, *:after, *, ::after, ::before {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  background: linear-gradient(#101925, #1f3949);
+  background-size: cover;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+	font-family: Oxanium;
+  font-size: 1.1rem;
+  align-content: start;
+}
+canvas {
+  position: fixed;
+  right: -32rem;
+  /* height: 100vh; */
+  z-index: -1;
+}
+
+p {margin: 1rem; color: white; font-size: 2rem;}
+
+h3 {
+  text-transform: uppercase;
+  margin: 1rem;   
+}
+h3::before {
+  content: 'Ora pacem, para bellum.';
+  position: absolute;
+  color: rgba(102,175,233,0.5); 
+  font-size: 5rem; 
+  word-break: break-word;
+}
+</style>
+</head>
+<html lang="en">
+<h3></h3>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script>
+  var width = 1000,
+    height = 1000,
+    speed = -2e-3,
+    start = Date.now();
+
+var sphere = {type: "Sphere"};
+
+var projection = d3.geo.orthographic()
+    .scale(width / 2.1)
+    .translate([width / 2, height / 2])
+    .precision(.5);
+
+var graticule = d3.geo.graticule();
+
+var canvas = d3.select("body").append("canvas")
+    .attr("width", width)
+    .attr("height", height);
+
+var context = canvas.node().getContext("2d");
+
+var path = d3.geo.path()
+    .projection(projection)
+    .context(context);
+
+d3.json("https://s3-us-west-2.amazonaws.com/s.cdpn.io/95802/world-110m.json", function(error, topo) {
+  if (error) throw error;
+
+  var land = topojson.feature(topo, topo.objects.land),
+      grid = graticule();
+
+  d3.timer(function() {
+    context.clearRect(0, 0, width, height);
+
+    projection.rotate([speed * (Date.now() - start), -15]).clipAngle(90);
+
+    context.beginPath();
+    path(sphere);
+    context.lineWidth = 0;
+    context.strokeStyle = "rgba(102,175,233,1)";
+    context.stroke();
+    context.fillStyle = "rgba(102,175,233,0.0)";
+    context.fill();
+
+    projection.clipAngle(180);
+
+    context.beginPath();
+    path(land);
+    context.fillStyle = "rgba(102,175,233,0.04)";
+    context.fill();
+
+    context.beginPath();
+    path(grid);
+    context.lineWidth = .5;
+    context.strokeStyle = "rgba(102,175,233,0.3)";
+    context.stroke();
+
+    projection.clipAngle(90);
+
+    context.beginPath();
+    path(land);
+    context.fillStyle = "rgba(102,175,233,0.1)";
+    context.fill();
+    context.lineWidth = 0;
+    context.strokeStyle = "transparent";
+    context.stroke();
+  });
+});
+
+d3.select(self.frameElement).style("height", height + "px");
+</script>
+</html>
