@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <style type="text/css">
+    body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      font-size: 16px;
+      background: hsl(200, 100%, 85%);
+    }
+    .wrapper {
+        text-align: center;
+        position: relative;
+    }
+    .hand {
+        position: absolute;
+        line-height: 1;
+        pointer-events: none;
+        font-size: calc(2em + 8vw);
+        transition: transform .25s ease;
+        top: 0;
+        left: 50%;
+        margin-left: -.35em;
+        transform-origin: 36% 0%;
+        transform: rotate(180deg) translateY(70vh);
+    }
+    input:checked ~ .hand {
+        transform: rotate(180deg);
+    }
+    input {
+        transform: scale(2);
+        transform-origin: 50% 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <input type="checkbox" id="useless"><br>
+    <label for="useless">Check Me</label>
+    <div class="hand" id="hand">👆</div>
+  </div>
+
+  <script>
+    console.clear();
+    document.getElementById("hand").addEventListener("transitionend", function(){
+        if (document.getElementById("useless").checked == true) {
+            document.getElementById("useless").checked = false;
+        }
+    });
+  </script>
+</body>
+</html>
