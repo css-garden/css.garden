@@ -81,5 +81,3 @@ div[class*=loader] {
   50%  { transform: perspective(300px) rotateX(-180deg) rotateY(0deg); } 
   100% { transform: perspective(300px) rotateX(-180deg) rotateY(-180deg); }
 }
-h1 {transition: opacity 250ms;}
-h1:hover {opacity: 1.0;}
